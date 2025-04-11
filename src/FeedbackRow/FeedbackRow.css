@@ -1,0 +1,12 @@
+.feedback-row-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 20px;
+}
+
+.feedback-row__colour-cell {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 24px;
+  height: 24px;
+}

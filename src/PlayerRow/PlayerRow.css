@@ -1,0 +1,32 @@
+.player-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+.player-row-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  height: 48px;
+  margin-bottom: 20px;
+  margin-right: 10px;
+}
+
+.player-row__colour-cell {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 48px;
+}
+
+.player-row__colour-picks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.player-row__colour-pick {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
