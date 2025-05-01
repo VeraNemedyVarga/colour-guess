@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 
 import { Colours, PlayerGuess, GameFeedback } from '../types';
+import { allColours } from '../utils/colours';
 import './Board.css';
 import PlayerRow from '../PlayerRow/PlayerRow';
 import FeedbackRow from '../FeedbackRow/FeedbackRow';
@@ -28,14 +29,7 @@ export default function Board() {
 
   const generateMasterCombination = (): MasterCombination => {
     const randomArray: MasterCombination = [];
-    const colours: Colours[] = [
-      'Red',
-      'Green',
-      'Blue',
-      'Yellow',
-      'Purple',
-      'Orange',
-    ];
+    const colours: Colours[] = allColours as Colours[];
     for (let i = 0; i < 4; i++) {
       const randomIndex = Math.floor(Math.random() * colours.length);
       const randomColour = colours[randomIndex];
@@ -59,7 +53,7 @@ export default function Board() {
         ))}
       </div>
       <div className="game-rows">
-        <div className="player-row">
+        <div className="">
           {playerRows.map((row) => (
             <PlayerRow row={row} key={row.id} />
           ))}
