@@ -1,10 +1,10 @@
 export const allColours = [
-  'Red',
-  'Green',
-  'Blue',
-  'Yellow',
-  'Purple',
-  'Orange',
+  'red',
+  'green',
+  'blue',
+  'yellow',
+  'purple',
+  'orange',
 ];
 
 export const cssColours = {

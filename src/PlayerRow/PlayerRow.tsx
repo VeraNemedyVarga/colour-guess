@@ -1,35 +1,34 @@
-import { PlayerGuess } from '../types';
+import { PlayerGuess, Colours } from '../types';
 import './PlayerRow.css';
-import { allColours, cssColours } from '../utils/colours';
+import { allColours } from '../utils/colours';
 import { useState } from 'react';
 
 function SpeedDial({
   id,
   cellIndex,
-  activeCell,
+  pickedColours,
+  setPickedColours,
 }: Readonly<{
   id: number;
   cellIndex: number;
-  activeCell: number | null;
+  pickedColours: PlayerGuess['colours'];
+  setPickedColours: (colours: PlayerGuess['colours']) => void;
 }>) {
   const [isOpen, setIsOpen] = useState(false);
-  const [pickedColour, setPickedColour] = useState('');
 
-  const handleColourPick = (colour: string) => {
+  const handleColourPick = (colour: Colours) => {
     setIsOpen(false);
-    setPickedColour(colour);
+    const newColours = [...pickedColours] as PlayerGuess['colours'];
+    newColours[cellIndex] = colour;
+    setPickedColours(newColours);
   };
 
   return (
-    <div
-      className={`speed-dial cell-${cellIndex} ${isOpen ? 'open' : ''} ${
-        activeCell === cellIndex && cellIndex >= 0 ? 'active' : ''
-      }`}
-    >
+    <div className={`speed-dial cell-${cellIndex} ${isOpen ? 'open' : ''}`}>
       <button
         className="speed-dial__trigger-cell"
         onClick={() => setIsOpen(!isOpen)}
-        style={{ backgroundColor: pickedColour || '' }}
+        style={{ backgroundColor: pickedColours[cellIndex] || '' }}
       >
         <span>+</span>
       </button>
@@ -43,7 +42,7 @@ function SpeedDial({
                 backgroundColor: `${colour}`,
                 animationDelay: isOpen ? `0.${(index + 1) % 8}s` : '0s',
               }}
-              onClick={() => handleColourPick(colour)}
+              onClick={() => handleColourPick(colour as Colours)}
             ></div>
           );
         })}
@@ -52,13 +51,17 @@ function SpeedDial({
   );
 }
 
-export default function PlayerRow({ row }: Readonly<{ row: PlayerGuess }>) {
-  const [pickedColours, setPickedColours] = useState<
-    [string, string, string, string]
-  >(['', '', '', '']);
-  const [activeRow, setActiveRow] = useState<number>(0);
-  const [activeCell, setActiveCell] = useState<number | null>(0);
-  const [pickedColoursInARow, setPickedColoursInARow] = useState<string[]>([]);
+export default function PlayerRow({
+  row,
+}: Readonly<{
+  row: PlayerGuess;
+}>) {
+  const [pickedColours, setPickedColours] = useState<PlayerGuess['colours']>([
+    '',
+    '',
+    '',
+    '',
+  ]);
 
   return (
     <div className="player-row">
@@ -69,15 +72,12 @@ export default function PlayerRow({ row }: Readonly<{ row: PlayerGuess }>) {
               id={row.id}
               key={`player-row__${row.id}_${index}`}
               cellIndex={index}
-              onClick={() => {
-                return setActiveCell(index);
-              }}
-              activeCell={activeCell}
+              setPickedColours={setPickedColours}
+              pickedColours={pickedColours}
             />
           );
         })}
       </div>
-      <button key={`${row.id}-submit`}>Submit</button>
     </div>
   );
 }

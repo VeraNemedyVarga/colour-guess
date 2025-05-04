@@ -1,10 +1,10 @@
 export type Colours =
-  | 'Red'
-  | 'Green'
-  | 'Blue'
-  | 'Yellow'
-  | 'Purple'
-  | 'Orange'
+  | 'red'
+  | 'green'
+  | 'blue'
+  | 'yellow'
+  | 'purple'
+  | 'orange'
   | '';
 
 export type GameAnswers = 'Black' | 'White' | '';

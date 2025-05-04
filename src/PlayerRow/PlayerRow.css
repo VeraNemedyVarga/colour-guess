@@ -1,21 +1,14 @@
 .player-row {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: repeat(4, auto);
 }
 
 .player-row-item {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   height: 48px;
-  margin-bottom: 20px;
   margin-right: 10px;
 }
-
-/* .player-row__colour-cell {
-  border: 1px solid #ccc;
-  padding: 10px;
-  width: 48px;
-} */
 
 .player-row__colour-picks {
   display: grid;
@@ -56,10 +49,14 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  position: fixed;
+  position: absolute;
   z-index: 1;
-  margin-top: -54px;
-  margin-left: 58px;
+  margin-top: -60px;
+  margin-left: 49px;
+
+  background-color: gray;
+  padding: 5px;
+  border-radius: 8px;
 }
 
 .speed-dial.open .speed-dial__colour-pick {

@@ -42,6 +42,8 @@ export default function Board() {
     generateMasterCombination()
   );
 
+  const [activeRowIndex, setactiveRowIndex] = useState<number>(0);
+
   return (
     <div>
       <div className="master-row">
@@ -53,9 +55,18 @@ export default function Board() {
         ))}
       </div>
       <div className="game-rows">
-        <div className="">
+        <div>
           {playerRows.map((row) => (
-            <PlayerRow row={row} key={row.id} />
+            <div
+              className={
+                'game-rows__player-row ' +
+                (row.id === activeRowIndex ? 'active' : 'disabled')
+              }
+              key={row.id}
+            >
+              <PlayerRow row={row} />
+              <button key={`${row.id}-submit`}>Submit</button>
+            </div>
           ))}
         </div>
         <div className="feedback-row">
