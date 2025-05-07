@@ -1,7 +1,7 @@
 import { PlayerGuess, Colours } from '../types';
 import './PlayerRow.css';
 import { allColours } from '../utils/colours';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function SpeedDial({
   id,
@@ -18,7 +18,13 @@ function SpeedDial({
 
   const handleColourPick = (colour: Colours) => {
     setIsOpen(false);
+
     const newColours = [...pickedColours] as PlayerGuess['colours'];
+    newColours.map((_, index) => {
+      if (newColours[index] === colour) {
+        newColours[index] = '';
+      }
+    });
     newColours[cellIndex] = colour;
     setPickedColours(newColours);
   };
@@ -53,15 +59,21 @@ function SpeedDial({
 
 export default function PlayerRow({
   row,
+  submitGuess,
 }: Readonly<{
   row: PlayerGuess;
+  submitGuess: (rowId: number, pickedColours: PlayerGuess['colours']) => void;
 }>) {
-  const [pickedColours, setPickedColours] = useState<PlayerGuess['colours']>([
-    '',
-    '',
-    '',
-    '',
-  ]);
+  const [submitDisabled, setSubmitDisabled] = useState(true);
+
+  const [pickedColours, setPickedColours] = useState<PlayerGuess['colours']>(
+    row.colours
+  );
+
+  useEffect(() => {
+    if (pickedColours.includes('')) return;
+    setSubmitDisabled(false);
+  }, [pickedColours]);
 
   return (
     <div className="player-row">
@@ -78,6 +90,13 @@ export default function PlayerRow({
           );
         })}
       </div>
+      <button
+        key={`${row.id}-submit`}
+        onClick={() => submitGuess(row.id, pickedColours)}
+        disabled={submitDisabled}
+      >
+        Submit
+      </button>
     </div>
   );
 }

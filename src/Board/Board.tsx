@@ -6,7 +6,7 @@ import './Board.css';
 import PlayerRow from '../PlayerRow/PlayerRow';
 import FeedbackRow from '../FeedbackRow/FeedbackRow';
 
-type MasterCombination = Array<{ index: number; colour: Colours }>;
+type MasterCombination = Array<Colours>;
 
 export default function Board() {
   const generateEmptyRows = <T extends PlayerGuess | GameFeedback>(
@@ -29,11 +29,15 @@ export default function Board() {
 
   const generateMasterCombination = (): MasterCombination => {
     const randomArray: MasterCombination = [];
-    const colours: Colours[] = allColours as Colours[];
+    const colours: Colours[] = [...allColours] as Colours[];
     for (let i = 0; i < 4; i++) {
       const randomIndex = Math.floor(Math.random() * colours.length);
       const randomColour = colours[randomIndex];
-      randomArray.push({ index: i, colour: randomColour });
+      randomArray.push(randomColour);
+
+      // Remove the random colour from the array to avoid duplicates
+      const colourIndex = colours.indexOf(randomColour);
+      colours.splice(colourIndex, 1);
     }
     return randomArray;
   };
@@ -43,6 +47,45 @@ export default function Board() {
   );
 
   const [activeRowIndex, setactiveRowIndex] = useState<number>(0);
+
+  const fisherYatesShuffle = (array: GameFeedback['colours']) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
+
+  const submitGuess = (rowId: number, colours: PlayerGuess['colours']) => {
+    const _playerRows = [...playerRows];
+    _playerRows.forEach((row) => {
+      if (row.id === rowId) {
+        row.colours = colours;
+      }
+    });
+    setPlayerRows(_playerRows);
+    compareGuessToMaster();
+  };
+
+  const compareGuessToMaster = () => {
+    const feedback: GameFeedback['colours'] = ['', '', '', ''];
+    playerRows[activeRowIndex].colours.forEach((colour, index) => {
+      if (masterCombination.current.includes(colour)) {
+        if (colour === masterCombination.current[index]) {
+          feedback[index] = 'white';
+        } else {
+          feedback[index] = 'black';
+        }
+      }
+    });
+
+    console.log('feedback', feedback);
+
+    const _feedbackRows = [...feedbackRows];
+    _feedbackRows[activeRowIndex].colours = fisherYatesShuffle(feedback);
+    setFeedbackRows(_feedbackRows);
+    setactiveRowIndex(activeRowIndex + 1);
+  };
 
   return (
     <div>
@@ -64,8 +107,7 @@ export default function Board() {
               }
               key={row.id}
             >
-              <PlayerRow row={row} />
-              <button key={`${row.id}-submit`}>Submit</button>
+              <PlayerRow row={row} submitGuess={submitGuess} />
             </div>
           ))}
         </div>

@@ -7,12 +7,12 @@ export type Colours =
   | 'orange'
   | '';
 
-export type GameAnswers = 'Black' | 'White' | '';
+export type FeedBackColour = 'black' | 'white' | '';
 export type PlayerGuess = {
   id: number;
   colours: [Colours, Colours, Colours, Colours];
 };
 export type GameFeedback = {
   id: number;
-  colours: [GameAnswers, GameAnswers, GameAnswers, GameAnswers];
+  colours: [FeedBackColour, FeedBackColour, FeedBackColour, FeedBackColour];
 };
