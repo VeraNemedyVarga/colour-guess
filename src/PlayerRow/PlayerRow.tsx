@@ -8,11 +8,13 @@ function SpeedDial({
   cellIndex,
   pickedColours,
   setPickedColours,
+  gameResult,
 }: Readonly<{
   id: number;
   cellIndex: number;
   pickedColours: PlayerGuess['colours'];
   setPickedColours: (colours: PlayerGuess['colours']) => void;
+  gameResult: string;
 }>) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -35,6 +37,7 @@ function SpeedDial({
         className="speed-dial__trigger-cell"
         onClick={() => setIsOpen(!isOpen)}
         style={{ backgroundColor: pickedColours[cellIndex] || '' }}
+        disabled={gameResult.length > 0}
       >
         <span>+</span>
       </button>
@@ -60,11 +63,13 @@ function SpeedDial({
 export default function PlayerRow({
   row,
   submitGuess,
+  gameResult,
 }: Readonly<{
   row: PlayerGuess;
   submitGuess: (rowId: number, pickedColours: PlayerGuess['colours']) => void;
+  gameResult: string;
 }>) {
-  const [submitDisabled, setSubmitDisabled] = useState(true);
+  const [submitIsDisabled, setSubmitIsDisabled] = useState(true);
 
   const [pickedColours, setPickedColours] = useState<PlayerGuess['colours']>(
     row.colours
@@ -72,7 +77,7 @@ export default function PlayerRow({
 
   useEffect(() => {
     if (pickedColours.includes('')) return;
-    setSubmitDisabled(false);
+    setSubmitIsDisabled(false);
   }, [pickedColours]);
 
   return (
@@ -86,14 +91,16 @@ export default function PlayerRow({
               cellIndex={index}
               setPickedColours={setPickedColours}
               pickedColours={pickedColours}
+              gameResult={gameResult}
             />
           );
         })}
       </div>
       <button
         key={`${row.id}-submit`}
+        className="player-row__submit-button"
         onClick={() => submitGuess(row.id, pickedColours)}
-        disabled={submitDisabled}
+        disabled={submitIsDisabled || gameResult.length > 0}
       >
         Submit
       </button>

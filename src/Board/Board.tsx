@@ -1,14 +1,21 @@
 import { useRef, useState } from 'react';
 
-import { Colours, PlayerGuess, GameFeedback } from '../types';
+import { Colours, PlayerGuess, GameFeedback, GameResult } from '../types';
 import { allColours } from '../utils/colours';
 import './Board.css';
 import PlayerRow from '../PlayerRow/PlayerRow';
 import FeedbackRow from '../FeedbackRow/FeedbackRow';
+import useOutsideClickHandler from '../hooks/useOutsideClickHandler';
 
 type MasterCombination = Array<Colours>;
 
-export default function Board() {
+export default function Board({
+  howToOpened,
+  setHowToOpened,
+}: Readonly<{
+  howToOpened: boolean;
+  setHowToOpened: (howToOpened: boolean) => void;
+}>) {
   const generateEmptyRows = <T extends PlayerGuess | GameFeedback>(
     row: T,
     rows: number
@@ -26,6 +33,15 @@ export default function Board() {
   const [feedbackRows, setFeedbackRows] = useState<GameFeedback[]>(
     generateEmptyRows({ id: 0, colours: ['', '', '', ''] }, 10)
   );
+  const [gameEnded, setGameEnded] = useState<boolean>(false);
+  const [gameResult, setGameResult] = useState<GameResult>('');
+
+  const [activeRowIndex, setactiveRowIndex] = useState<number>(0);
+
+  const overlayBackground = useRef(null);
+  useOutsideClickHandler(overlayBackground, () => {
+    setHowToOpened(false);
+  });
 
   const generateMasterCombination = (): MasterCombination => {
     const randomArray: MasterCombination = [];
@@ -46,8 +62,6 @@ export default function Board() {
     generateMasterCombination()
   );
 
-  const [activeRowIndex, setactiveRowIndex] = useState<number>(0);
-
   const fisherYatesShuffle = (array: GameFeedback['colours']) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -64,10 +78,16 @@ export default function Board() {
       }
     });
     setPlayerRows(_playerRows);
-    compareGuessToMaster();
+    giveFeedback();
+    const shouldGameEnd = gameShouldEnd();
+    setGameEnded(shouldGameEnd);
+
+    if (!shouldGameEnd && activeRowIndex < playerRows.length - 1) {
+      setactiveRowIndex(activeRowIndex + 1);
+    }
   };
 
-  const compareGuessToMaster = () => {
+  const giveFeedback = () => {
     const feedback: GameFeedback['colours'] = ['', '', '', ''];
     playerRows[activeRowIndex].colours.forEach((colour, index) => {
       if (masterCombination.current.includes(colour)) {
@@ -78,44 +98,76 @@ export default function Board() {
         }
       }
     });
-
-    console.log('feedback', feedback);
-
     const _feedbackRows = [...feedbackRows];
     _feedbackRows[activeRowIndex].colours = fisherYatesShuffle(feedback);
     setFeedbackRows(_feedbackRows);
-    setactiveRowIndex(activeRowIndex + 1);
+  };
+
+  const gameShouldEnd = () => {
+    if (
+      arraysMatch(playerRows[activeRowIndex].colours, masterCombination.current)
+    ) {
+      setGameResult('won');
+      return true;
+    }
+    if (activeRowIndex === playerRows.length - 1) {
+      setGameResult('lost');
+      return true;
+    }
+    return false;
+  };
+
+  const arraysMatch = (arr1: Colours[], arr2: Colours[]) => {
+    return (
+      arr1.length === arr2.length &&
+      arr1.every((value, index: number) => value === arr2[index])
+    );
   };
 
   return (
-    <div>
-      <div className="master-row">
+    <div
+      className={howToOpened ? 'how-to-overlay-open' : ''}
+      ref={overlayBackground}
+    >
+      <div className={(gameEnded ? 'game-ended ' : '') + 'master-row'}>
         {Array.from({ length: 4 }, (_, index) => (
           <div
-            key={`master-row__${index}`}
             className={`col-${index} master-row__colour-cell`}
-          ></div>
+            key={`master-row__${index}-back`}
+          >
+            <div
+              key={`master-row__${index}-back`}
+              className="card-back"
+              style={{ '--animation-order': index + 1 } as React.CSSProperties}
+            ></div>
+
+            <div
+              className="card-front"
+              style={{ backgroundColor: masterCombination.current[index] }}
+            ></div>
+          </div>
         ))}
       </div>
       <div className="game-rows">
-        <div>
-          {playerRows.map((row) => (
-            <div
-              className={
-                'game-rows__player-row ' +
-                (row.id === activeRowIndex ? 'active' : 'disabled')
-              }
-              key={row.id}
-            >
-              <PlayerRow row={row} submitGuess={submitGuess} />
-            </div>
-          ))}
-        </div>
-        <div className="feedback-row">
-          {feedbackRows.map((row) => (
-            <FeedbackRow row={row} key={row.id} />
-          ))}
-        </div>
+        {playerRows.map((row, index) => (
+          <div
+            className={
+              'game-rows__player-row ' +
+              (row.id === activeRowIndex ? 'active' : 'disabled')
+            }
+            key={row.id}
+          >
+            <PlayerRow
+              row={row}
+              submitGuess={submitGuess}
+              gameResult={gameResult}
+            />
+            <FeedbackRow
+              row={feedbackRows[index]}
+              key={feedbackRows[index].id}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

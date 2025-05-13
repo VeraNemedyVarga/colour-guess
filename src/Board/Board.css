@@ -1,16 +1,87 @@
+.how-to-overlay-open {
+  overflow: hidden;
+}
+
+.master-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  height: 48px;
+  margin-bottom: 40px;
+
+  justify-items: center;
+  align-items: center;
+}
+
+.master-row__colour-cell {
+  display: flex;
+  background-color: #3E3E3E;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  height: 48px;
+  width: 48px;
+  position: relative;
+}
+
+.card-front, .card-back {
+  width: 100%;
+  height: 100%;
+}
+
+/* master row colour cell animation */
+
+.master-row__colour-cell {
+  transform-style: preserve-3d;
+  transition: 0.5s;
+  position: relative;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
+.game-ended .master-row__colour-cell {
+  transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+}
+
+.card-front,
+.card-back {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-front {
+  border-radius: 8px;
+  height: 100%;
+  transform: rotateX(0deg);
+  -webkit-transform: rotateX(0deg);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  position: absolute;
+  text-align: center;
+  right: 0;
+  left: 0;
+  top: 0;
+  height: 100%;
+}
+
+/* master row colour cell animation */
+
 .game-rows {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .game-rows__player-row {
   display: grid;
   grid-template-columns: auto 1fr;
   margin-bottom: 20px;
-  margin-right: 40px;
 }
 
 .disabled {
   pointer-events: none;
-  opacity: 60%;
+  opacity: 70%;
 }

@@ -1,11 +1,12 @@
 .player-row {
   display: grid;
   grid-template-columns: repeat(4, auto);
+  margin-right: 40px;
 }
 
 .player-row-item {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   height: 48px;
   margin-right: 10px;
 }
@@ -32,6 +33,7 @@
 .speed-dial__trigger-cell {
   display: flex;
   border: 1px solid #ccc;
+  border-radius: 8px;
   padding: 10px;
   height: 48px;
   width: 48px;
@@ -125,4 +127,8 @@
     transform: scale(0.8);
     opacity: 1;
   }
+}
+
+.player-row__submit-button {
+  height: 48px;
 }
