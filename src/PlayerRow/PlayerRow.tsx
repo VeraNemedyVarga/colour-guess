@@ -83,7 +83,7 @@ export default function PlayerRow({
   return (
     <div className="player-row">
       <div key={row.id} className="player-row-item">
-        {row.colours.map((colour, index) => {
+        {row.colours.map((_, index) => {
           return (
             <SpeedDial
               id={row.id}
