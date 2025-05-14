@@ -1,7 +1,8 @@
 import { PlayerGuess, Colours } from '../types';
 import './PlayerRow.css';
 import { allColours } from '../utils/colours';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import useOutsideClickHandler from '../hooks/useOutsideClickHandler';
 
 function SpeedDial({
   id,
@@ -17,6 +18,10 @@ function SpeedDial({
   gameResult: string;
 }>) {
   const [isOpen, setIsOpen] = useState(false);
+  const overlay = useRef(null);
+  useOutsideClickHandler(overlay, () => {
+    setIsOpen(false);
+  });
 
   const handleColourPick = (colour: Colours) => {
     setIsOpen(false);
@@ -41,7 +46,7 @@ function SpeedDial({
       >
         <span>+</span>
       </button>
-      <div className={`speed-dial_colour-picks `}>
+      <div className={`speed-dial_colour-picks `} ref={overlay}>
         {allColours.map((colour, index) => {
           return (
             <div
