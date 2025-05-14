@@ -10,12 +10,6 @@ const useOutsideClickHandler = (
         ref.current &&
         !(ref.current as HTMLElement).contains(e.target as Node)
       ) {
-        console.log('ref.current', ref.current);
-        console.log('e.target', e.target);
-        console.log(
-          'contains',
-          !(ref.current as HTMLElement).contains(e.target as Node)
-        );
         e.preventDefault();
         callbackFunction();
       }
