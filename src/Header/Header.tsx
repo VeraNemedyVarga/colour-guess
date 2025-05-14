@@ -54,8 +54,8 @@ export function HowToOverlay() {
                   style={{
                     backgroundColor: 'black',
                     display: 'inline-block',
-                    width: 30,
-                    height: 30,
+                    width: 20,
+                    height: 20,
                     margin: 5,
                     borderRadius: 50,
                   }}
@@ -71,8 +71,8 @@ export function HowToOverlay() {
                   style={{
                     backgroundColor: 'white',
                     display: 'inline-block',
-                    width: 30,
-                    height: 30,
+                    width: 20,
+                    height: 20,
                     margin: 5,
                     borderRadius: 50,
                   }}
@@ -88,8 +88,8 @@ export function HowToOverlay() {
                   style={{
                     backgroundColor: 'transparent',
                     display: 'inline-block',
-                    width: 29,
-                    height: 29,
+                    width: 20,
+                    height: 20,
                     margin: 5,
                     borderRadius: 50,
                     border: '1px solid white',

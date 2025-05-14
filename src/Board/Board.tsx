@@ -5,6 +5,8 @@ import { allColours } from '../utils/colours';
 import './Board.css';
 import PlayerRow from '../PlayerRow/PlayerRow';
 import FeedbackRow from '../FeedbackRow/FeedbackRow';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 type MasterCombination = Array<Colours>;
 
@@ -62,6 +64,23 @@ export default function Board({
     return array;
   };
 
+  const masterRow = useRef(null);
+  const q = gsap.utils.selector(masterRow);
+
+  useGSAP(() => {
+    gsap.set(q('.master-row__colour-cell'), {
+      y: -50,
+    });
+    gsap.to(q('.master-row__colour-cell'), {
+      y: 0,
+      duration: 0.2,
+      stagger: {
+        amount: 0.5,
+        from: 'end',
+      },
+    });
+  }, []);
+
   const submitGuess = (rowId: number, colours: PlayerGuess['colours']) => {
     const _playerRows = [...playerRows];
     _playerRows.forEach((row) => {
@@ -100,10 +119,26 @@ export default function Board({
       arraysMatch(playerRows[activeRowIndex].colours, masterCombination.current)
     ) {
       setGameResult('won');
+      gsap.to(q('.master-row__colour-cell'), {
+        rotateY: 0,
+        duration: 0.1,
+        stagger: {
+          each: 0.2,
+          from: 'start',
+        },
+      });
       return true;
     }
     if (activeRowIndex === playerRows.length - 1) {
       setGameResult('lost');
+      gsap.to(q('.master-row__colour-cell'), {
+        rotateY: 0,
+        duration: 0.2,
+        stagger: {
+          each: 0.1,
+          from: 'start',
+        },
+      });
       return true;
     }
     return false;
@@ -118,7 +153,10 @@ export default function Board({
 
   return (
     <div className={howToOpened ? 'how-to-overlay-open' : ''}>
-      <div className={(gameEnded ? 'game-ended ' : '') + 'master-row'}>
+      <div
+        className={(gameEnded ? 'game-ended ' : '') + 'master-row'}
+        ref={masterRow}
+      >
         {Array.from({ length: 4 }, (_, index) => (
           <div
             className={`col-${index} master-row__colour-cell`}
