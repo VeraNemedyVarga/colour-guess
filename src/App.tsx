@@ -9,7 +9,7 @@ function App() {
   return (
     <>
       <Header howToOpened={howToOpened} setHowToOpened={setHowToOpened} />
-      <Board howToOpened={howToOpened} setHowToOpened={setHowToOpened} />
+      <Board howToOpened={howToOpened} />
     </>
   );
 }

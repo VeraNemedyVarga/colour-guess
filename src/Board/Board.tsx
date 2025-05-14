@@ -5,16 +5,13 @@ import { allColours } from '../utils/colours';
 import './Board.css';
 import PlayerRow from '../PlayerRow/PlayerRow';
 import FeedbackRow from '../FeedbackRow/FeedbackRow';
-import useOutsideClickHandler from '../hooks/useOutsideClickHandler';
 
 type MasterCombination = Array<Colours>;
 
 export default function Board({
   howToOpened,
-  setHowToOpened,
 }: Readonly<{
   howToOpened: boolean;
-  setHowToOpened: (howToOpened: boolean) => void;
 }>) {
   const generateEmptyRows = <T extends PlayerGuess | GameFeedback>(
     row: T,
@@ -37,11 +34,6 @@ export default function Board({
   const [gameResult, setGameResult] = useState<GameResult>('');
 
   const [activeRowIndex, setactiveRowIndex] = useState<number>(0);
-
-  const overlayBackground = useRef(null);
-  useOutsideClickHandler(overlayBackground, () => {
-    setHowToOpened(false);
-  });
 
   const generateMasterCombination = (): MasterCombination => {
     const randomArray: MasterCombination = [];
@@ -125,10 +117,7 @@ export default function Board({
   };
 
   return (
-    <div
-      className={howToOpened ? 'how-to-overlay-open' : ''}
-      ref={overlayBackground}
-    >
+    <div className={howToOpened ? 'how-to-overlay-open' : ''}>
       <div className={(gameEnded ? 'game-ended ' : '') + 'master-row'}>
         {Array.from({ length: 4 }, (_, index) => (
           <div

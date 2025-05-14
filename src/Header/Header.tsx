@@ -1,5 +1,7 @@
 import './Header.css';
 import { allColours } from '../utils/colours';
+import { useRef } from 'react';
+import useOutsideClickHandler from '../hooks/useOutsideClickHandler';
 
 export function HowToOverlay() {
   return (
@@ -117,9 +119,14 @@ export default function Header({
   howToOpened: boolean;
   setHowToOpened: (opened: boolean) => void;
 }>) {
+  const wrapper = useRef(null);
+  useOutsideClickHandler(wrapper, () => {
+    setHowToOpened(false);
+  });
+
   return (
     <div>
-      <div className={howToOpened ? 'opened' : 'closed'}>
+      <div className={howToOpened ? 'opened' : 'closed'} ref={wrapper}>
         <HowToOverlay />
       </div>
       <div>
