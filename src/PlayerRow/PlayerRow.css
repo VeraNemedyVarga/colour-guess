@@ -61,14 +61,17 @@
   border-radius: 8px;
 }
 
-.speed-dial.open .speed-dial__colour-pick {
-  display: flex;
+.speed-dial .speed-dial__colour-pick {
+  cursor: pointer;
   justify-content: center;
   align-items: center;
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  
+}
+
+.speed-dial.open .speed-dial__colour-pick {
+  display: flex;
 }
 
 /* speed dial animation */

@@ -27,15 +27,19 @@ export default function Board({
   };
 
   const [playerRows, setPlayerRows] = useState<PlayerGuess[]>(
-    generateEmptyRows({ id: 0, colours: ['', '', '', ''] }, 10)
+    generateEmptyRows({ id: 0, colours: ['', '', '', ''] }, 2)
   );
   const [feedbackRows, setFeedbackRows] = useState<GameFeedback[]>(
-    generateEmptyRows({ id: 0, colours: ['', '', '', ''] }, 10)
+    generateEmptyRows({ id: 0, colours: ['', '', '', ''] }, 2)
   );
   const [gameEnded, setGameEnded] = useState<boolean>(false);
   const [gameResult, setGameResult] = useState<GameResult>('');
 
   const [activeRowIndex, setactiveRowIndex] = useState<number>(0);
+
+  gsap.registerPlugin(useGSAP);
+  const playerCells = useRef(null);
+  const qpc = gsap.utils.selector(playerCells);
 
   const generateMasterCombination = (): MasterCombination => {
     const randomArray: MasterCombination = [];
@@ -119,30 +123,72 @@ export default function Board({
       arraysMatch(playerRows[activeRowIndex].colours, masterCombination.current)
     ) {
       setGameResult('won');
-      gsap.to(q('.master-row__colour-cell'), {
-        rotateY: 0,
-        duration: 0.1,
-        stagger: {
-          each: 0.2,
-          from: 'start',
-        },
-      });
       return true;
     }
     if (activeRowIndex === playerRows.length - 1) {
       setGameResult('lost');
-      gsap.to(q('.master-row__colour-cell'), {
-        rotateY: 0,
-        duration: 0.2,
-        stagger: {
-          each: 0.1,
-          from: 'start',
-        },
-      });
       return true;
     }
     return false;
   };
+
+  useGSAP(
+    () => {
+      if (gameEnded) {
+        gsap.to(q('.master-row__colour-cell'), {
+          rotateY: 0,
+          duration: 0.1,
+          stagger: {
+            each: 0.2,
+            from: 'start',
+          },
+        });
+
+        if (gameResult === 'won') {
+          gsap.fromTo(
+            qpc('.player-row .speed-dial'),
+            {
+              y: 20,
+              borderColor: 'green',
+            },
+            {
+              y: 0,
+              duration: 1.2,
+              borderColor: 'white',
+              yoyo: true,
+              stagger: {
+                amount: 0.8,
+                from: 'start',
+                grid: [10, 4],
+              },
+            }
+          );
+        }
+
+        if (gameResult === 'lost') {
+          const tl = gsap.timeline();
+
+          tl.fromTo(
+            qpc('.player-row'),
+            {
+              x: 15,
+            },
+            {
+              x: 0,
+              duration: 0.1,
+              repeat: 3,
+              yoyo: true,
+            }
+          );
+
+          tl.set(qpc('.player-row'), {
+            x: 0,
+          });
+        }
+      }
+    },
+    { dependencies: [gameEnded] }
+  );
 
   const arraysMatch = (arr1: Colours[], arr2: Colours[]) => {
     return (
@@ -175,7 +221,12 @@ export default function Board({
           </div>
         ))}
       </div>
-      <div className="game-rows">
+      <div className="game-result-header">
+        {gameResult === 'won' ? 'Good Job! 🥳' : null}
+        {gameResult === 'lost' ? "You'll get it next time 🤗" : null}
+      </div>
+
+      <div className="game-rows" ref={playerCells}>
         {playerRows.map((row, index) => (
           <div
             className={
