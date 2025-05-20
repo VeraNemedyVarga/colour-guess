@@ -27,10 +27,10 @@ export default function Board({
   };
 
   const [playerRows, setPlayerRows] = useState<PlayerGuess[]>(
-    generateEmptyRows({ id: 0, colours: ['', '', '', ''] }, 2)
+    generateEmptyRows({ id: 0, colours: ['', '', '', ''] }, 5)
   );
   const [feedbackRows, setFeedbackRows] = useState<GameFeedback[]>(
-    generateEmptyRows({ id: 0, colours: ['', '', '', ''] }, 2)
+    generateEmptyRows({ id: 0, colours: ['', '', '', ''] }, 5)
   );
   const [gameEnded, setGameEnded] = useState<boolean>(false);
   const [gameResult, setGameResult] = useState<GameResult>('');

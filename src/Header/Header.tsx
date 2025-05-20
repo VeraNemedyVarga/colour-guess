@@ -119,14 +119,14 @@ export default function Header({
   howToOpened: boolean;
   setHowToOpened: (opened: boolean) => void;
 }>) {
-  const wrapper = useRef(null);
-  useOutsideClickHandler(wrapper, () => {
+  const howtowrapper = useRef(null);
+  useOutsideClickHandler(howtowrapper, () => {
     setHowToOpened(false);
   });
 
   return (
     <div>
-      <div className={howToOpened ? 'opened' : 'closed'} ref={wrapper}>
+      <div className={howToOpened ? 'opened' : 'closed'} ref={howtowrapper}>
         <HowToOverlay />
       </div>
       <div>
