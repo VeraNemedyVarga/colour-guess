@@ -121,7 +121,10 @@ export default function Header({
 }>) {
   const howtowrapper = useRef(null);
   useOutsideClickHandler(howtowrapper, () => {
-    setHowToOpened(false);
+    if (howToOpened) {
+      // Only call the setter if the modal is actually open
+      setHowToOpened(false);
+    }
   });
 
   return (

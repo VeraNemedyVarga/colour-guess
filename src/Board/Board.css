@@ -1,4 +1,4 @@
-.how-to-overlay-open {
+.overlay-open {
   overflow: hidden;
 }
 
@@ -15,6 +15,15 @@
   height: 50px;
   margin-bottom: 20px;
   padding: 10px;
+}
+
+.settings__fieldset {
+  border: none;
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
 }
 
 .master-row__colour-cell {

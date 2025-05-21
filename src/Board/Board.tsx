@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 
 import { Colours, PlayerGuess, GameFeedback, GameResult } from '../types';
 import { allColours } from '../utils/colours';
@@ -16,45 +16,53 @@ export default function Board({
   howToOpened: boolean;
 }>) {
   const generateEmptyRows = <T extends PlayerGuess | GameFeedback>(
-    row: T,
-    rows: number
+    templateRow: T,
+    count: number
   ): T[] => {
     const emptyRows: T[] = [];
-    for (let i = 0; i < rows; i++) {
-      emptyRows.push({ ...row, id: i });
+    for (let i = 0; i < count; i++) {
+      emptyRows.push({ ...templateRow, id: i });
     }
     return emptyRows;
   };
 
-  const [playerRows, setPlayerRows] = useState<PlayerGuess[]>(
-    generateEmptyRows({ id: 0, colours: ['', '', '', ''] }, 5)
+  // Memoize helper functions defined within the component
+  const memoizedGenerateEmptyRows = useCallback(generateEmptyRows, []);
+
+  const [rows, setRows] = useState<number>(5);
+  const [colourRepetition, setColourRepetition] = useState<boolean>(false);
+
+  const [playerRows, setPlayerRows] = useState<PlayerGuess[]>(() =>
+    memoizedGenerateEmptyRows({ id: 0, colours: ['', '', '', ''] }, rows)
   );
-  const [feedbackRows, setFeedbackRows] = useState<GameFeedback[]>(
-    generateEmptyRows({ id: 0, colours: ['', '', '', ''] }, 5)
+  const [feedbackRows, setFeedbackRows] = useState<GameFeedback[]>(() =>
+    memoizedGenerateEmptyRows({ id: 0, colours: ['', '', '', ''] }, rows)
   );
   const [gameEnded, setGameEnded] = useState<boolean>(false);
   const [gameResult, setGameResult] = useState<GameResult>('');
 
   const [activeRowIndex, setactiveRowIndex] = useState<number>(0);
 
-  gsap.registerPlugin(useGSAP);
   const playerCells = useRef(null);
   const qpc = gsap.utils.selector(playerCells);
 
-  const generateMasterCombination = (): MasterCombination => {
+  const generateMasterCombination = useCallback((): MasterCombination => {
     const randomArray: MasterCombination = [];
     const colours: Colours[] = [...allColours] as Colours[];
+    // Ensure master combination always has 4 colours, regardless of 'rows' state
     for (let i = 0; i < 4; i++) {
       const randomIndex = Math.floor(Math.random() * colours.length);
       const randomColour = colours[randomIndex];
       randomArray.push(randomColour);
 
-      // Remove the random colour from the array to avoid duplicates
-      const colourIndex = colours.indexOf(randomColour);
-      colours.splice(colourIndex, 1);
+      // Remove the random colour from the array to avoid duplicates if colourRepetition is not allowed
+      if (!colourRepetition) {
+        const colourIndex = colours.indexOf(randomColour);
+        colours.splice(colourIndex, 1);
+      }
     }
     return randomArray;
-  };
+  }, [colourRepetition]); // allColours is a constant import
 
   const masterCombination = useRef<MasterCombination>(
     generateMasterCombination()
@@ -83,7 +91,47 @@ export default function Board({
         from: 'end',
       },
     });
-  }, []);
+  }, [masterCombination.current]);
+
+  useEffect(() => {
+    let newValidatedRows;
+    if (isNaN(rows) || typeof rows !== 'number') {
+      newValidatedRows = 1;
+    } else {
+      newValidatedRows = Math.max(1, Math.min(rows, 10));
+    }
+
+    // If the current 'rows' state is not the 'newValidatedRows' (e.g., it was NaN or out of bounds),
+    // update 'rows' to the corrected value and exit this effect run.
+    // The effect will run again with the corrected 'rows' value.
+    if (rows !== newValidatedRows) {
+      setRows(newValidatedRows);
+      return;
+    }
+
+    setPlayerRows(
+      memoizedGenerateEmptyRows(
+        { id: 0, colours: ['', '', '', ''] },
+        newValidatedRows
+      )
+    );
+    setFeedbackRows(
+      memoizedGenerateEmptyRows(
+        { id: 0, colours: ['', '', '', ''] },
+        newValidatedRows
+      )
+    );
+    setactiveRowIndex(0);
+    setGameEnded(false);
+    setGameResult('');
+    masterCombination.current = generateMasterCombination();
+  }, [
+    rows,
+    memoizedGenerateEmptyRows,
+    generateMasterCombination,
+    masterCombination,
+    colourRepetition,
+  ]);
 
   const submitGuess = (rowId: number, colours: PlayerGuess['colours']) => {
     const _playerRows = [...playerRows];
@@ -132,39 +180,39 @@ export default function Board({
     return false;
   };
 
-  useGSAP(
-    () => {
-      if (gameEnded) {
-        gsap.to(q('.master-row__colour-cell'), {
-          rotateY: 0,
-          duration: 0.1,
-          stagger: {
-            each: 0.2,
-            from: 'start',
+  // Effect to handle GSAP animations when game ends
+
+  useGSAP(() => {
+    if (gameEnded) {
+      gsap.to(q('.master-row__colour-cell'), {
+        rotateY: 0,
+        duration: 0.1,
+        stagger: {
+          each: 0.2,
+          from: 'start',
+        },
+      });
+
+      if (gameResult === 'won') {
+        gsap.fromTo(
+          qpc('.player-row .speed-dial'),
+          {
+            y: 20,
+            borderColor: 'green',
           },
-        });
-
-        if (gameResult === 'won') {
-          gsap.fromTo(
-            qpc('.player-row .speed-dial'),
-            {
-              y: 20,
-              borderColor: 'green',
+          {
+            y: 0,
+            duration: 1.2,
+            borderColor: 'white',
+            yoyo: true,
+            stagger: {
+              amount: 0.8,
+              from: 'start',
+              grid: [10, 4],
             },
-            {
-              y: 0,
-              duration: 1.2,
-              borderColor: 'white',
-              yoyo: true,
-              stagger: {
-                amount: 0.8,
-                from: 'start',
-                grid: [10, 4],
-              },
-            }
-          );
-        }
-
+          }
+        );
+      } else if (gameResult === 'lost') {
         if (gameResult === 'lost') {
           const tl = gsap.timeline();
 
@@ -186,9 +234,8 @@ export default function Board({
           });
         }
       }
-    },
-    { dependencies: [gameEnded] }
-  );
+    }
+  }, [gameEnded, gameResult]);
 
   const arraysMatch = (arr1: Colours[], arr2: Colours[]) => {
     return (
@@ -226,6 +273,37 @@ export default function Board({
         {gameResult === 'lost' ? "You'll get it next time 🤗" : null}
       </div>
 
+      <div className="settings">
+        <fieldset className="settings__fieldset">
+          <label htmlFor="rows">Number of rows</label>
+          <input
+            type="number"
+            value={rows}
+            id="rows"
+            name="rows"
+            min="1"
+            max="10"
+            step="1"
+            onChange={(e) => {
+              setRows(Number(e.target.value));
+            }}
+            aria-label="Number of rows"
+          />
+        </fieldset>
+        <fieldset className="settings__fieldset">
+          <label htmlFor="colourRepetition">
+            Allow colour repetition in puzzle
+          </label>
+          <input
+            type="checkbox"
+            name="colourRepetition"
+            id="colourRepetition"
+            defaultChecked={colourRepetition}
+            onChange={(e) => setColourRepetition(e.target.checked)}
+          />
+        </fieldset>
+      </div>
+
       <div className="game-rows" ref={playerCells}>
         {playerRows.map((row, index) => (
           <div
@@ -239,6 +317,7 @@ export default function Board({
               row={row}
               submitGuess={submitGuess}
               gameResult={gameResult}
+              colourRepetition={colourRepetition}
             />
             <FeedbackRow
               row={feedbackRows[index]}

@@ -10,7 +10,6 @@ const useOutsideClickHandler = (
         ref.current &&
         !(ref.current as HTMLElement).contains(e.target as Node)
       ) {
-        e.preventDefault();
         callbackFunction();
       }
     };

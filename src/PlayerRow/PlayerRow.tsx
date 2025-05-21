@@ -10,17 +10,21 @@ function SpeedDial({
   pickedColours,
   setPickedColours,
   gameResult,
+  colourRepetition,
 }: Readonly<{
   id: number;
   cellIndex: number;
   pickedColours: PlayerGuess['colours'];
   setPickedColours: (colours: PlayerGuess['colours']) => void;
   gameResult: string;
+  colourRepetition: boolean;
 }>) {
   const [isOpen, setIsOpen] = useState(false);
   const overlay = useRef(null);
   useOutsideClickHandler(overlay, () => {
-    setIsOpen(false);
+    if (isOpen) {
+      setIsOpen(false);
+    }
   });
 
   const handleColourPick = (colour: Colours) => {
@@ -28,8 +32,10 @@ function SpeedDial({
 
     const newColours = [...pickedColours] as PlayerGuess['colours'];
     newColours.map((_, index) => {
-      if (newColours[index] === colour) {
-        newColours[index] = '';
+      if (!colourRepetition) {
+        if (newColours[index] === colour) {
+          newColours[index] = '';
+        }
       }
     });
     newColours[cellIndex] = colour;
@@ -69,10 +75,12 @@ export default function PlayerRow({
   row,
   submitGuess,
   gameResult,
+  colourRepetition,
 }: Readonly<{
   row: PlayerGuess;
   submitGuess: (rowId: number, pickedColours: PlayerGuess['colours']) => void;
   gameResult: string;
+  colourRepetition: boolean;
 }>) {
   const [submitIsDisabled, setSubmitIsDisabled] = useState(true);
 
@@ -84,6 +92,10 @@ export default function PlayerRow({
     if (pickedColours.includes('')) return;
     setSubmitIsDisabled(false);
   }, [pickedColours]);
+
+  useEffect(() => {
+    setPickedColours(row.colours);
+  }, [row.colours]);
 
   return (
     <div className="player-row">
@@ -97,6 +109,7 @@ export default function PlayerRow({
               setPickedColours={setPickedColours}
               pickedColours={pickedColours}
               gameResult={gameResult}
+              colourRepetition={colourRepetition}
             />
           );
         })}
