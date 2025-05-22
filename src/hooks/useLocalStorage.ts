@@ -3,7 +3,7 @@ const useLocalStorage = () => {
     try {
       window.localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
-      console.log(error);
+      console.warn(error);
     }
   };
 
@@ -12,7 +12,7 @@ const useLocalStorage = () => {
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : defaultValue;
     } catch (error) {
-      console.log(error);
+      console.warn(error);
       return defaultValue;
     }
   };

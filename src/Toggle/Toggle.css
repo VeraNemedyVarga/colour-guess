@@ -1,0 +1,31 @@
+.toggle {
+  width: 55px;
+  border-radius: 15px;
+  height: 25px;
+  background-color: var(--color-master-card-back);
+  position: relative;
+  cursor: pointer;
+}
+
+.toggle__icon.light {
+  margin-left: auto;
+}
+
+.toggle__slider {
+  background-color: #000;
+  height: 25px;
+  width: 25px;
+  border-radius: 50px;
+  border: 1px solid #fff;
+  position: absolute;
+  top: 0;
+  transition: all .3s ease;
+}
+
+.toggle.dark .toggle__slider {
+  transform: translateX(0);
+}
+
+.toggle.light .toggle__slider {
+  transform: translateX(120%);
+}

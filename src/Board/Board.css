@@ -28,8 +28,8 @@
 
 .master-row__colour-cell {
   display: flex;
-  background-color: #3E3E3E;
-  border: 1px solid #ccc;
+  background-color: var(--color-master-card-back);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   height: 48px;
   width: 48px;

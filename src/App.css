@@ -6,6 +6,17 @@
   box-sizing: border-box;
 }
 
+.title {
+  font-weight: 700;
+  margin: 2rem 0;
+  font-size: 1.2rem;
+}
+
+.game-result-header {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
 .closed {
   display: none;
 }
@@ -36,7 +47,6 @@
   text-align: left;
 }
 
-
 .colour-name::after {
   content: ', ';
 }
@@ -52,4 +62,19 @@
 .feedback-colour li {
   display: inline-flex;
   align-items: center;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.how-to-button {
+  margin-right: 1rem;
+}
+
+.toggle {
+  display: flex;
+  margin-left: auto;
 }

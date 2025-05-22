@@ -5,6 +5,7 @@ import HowToOverlay from './HowToOverlay/HowToOverlay';
 import SettingsOverlay from './SettingsOverlay/SettingsOverlay';
 import useOutsideClickHandler from './hooks/useOutsideClickHandler';
 import useLocalStorage from './hooks/useLocalStorage';
+import Toggle from './Toggle/Toggle';
 
 function App() {
   const { getItem } = useLocalStorage();
@@ -64,11 +65,16 @@ function App() {
             setSettingsOpened={setSettingsOpened}
           />
         </div>
-        <div>
-          <button onClick={handleHowToOpen}>How to play?</button>
-          <button onClick={handleSettingsOpen}>Settings</button>
+        <div className="header">
+          <button className="how-to-button" onClick={handleHowToOpen}>
+            How to play?
+          </button>
+          <button className="settings-button" onClick={handleSettingsOpen}>
+            Settings
+          </button>
+          <Toggle />
         </div>
-        <p>Guess the colour combination</p>
+        <p className="title">Guess the colour combination</p>
       </div>
 
       <Board
