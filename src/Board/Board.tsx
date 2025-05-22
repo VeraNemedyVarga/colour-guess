@@ -12,8 +12,14 @@ type MasterCombination = Array<Colours>;
 
 export default function Board({
   howToOpened,
+  settingsOpened,
+  numberOfRows,
+  colourRepetition,
 }: Readonly<{
   howToOpened: boolean;
+  settingsOpened: boolean;
+  numberOfRows: number;
+  colourRepetition: boolean;
 }>) {
   const generateEmptyRows = <T extends PlayerGuess | GameFeedback>(
     templateRow: T,
@@ -29,14 +35,17 @@ export default function Board({
   // Memoize helper functions defined within the component
   const memoizedGenerateEmptyRows = useCallback(generateEmptyRows, []);
 
-  const [rows, setRows] = useState<number>(5);
-  const [colourRepetition, setColourRepetition] = useState<boolean>(false);
-
   const [playerRows, setPlayerRows] = useState<PlayerGuess[]>(() =>
-    memoizedGenerateEmptyRows({ id: 0, colours: ['', '', '', ''] }, rows)
+    memoizedGenerateEmptyRows(
+      { id: 0, colours: ['', '', '', ''] },
+      numberOfRows
+    )
   );
   const [feedbackRows, setFeedbackRows] = useState<GameFeedback[]>(() =>
-    memoizedGenerateEmptyRows({ id: 0, colours: ['', '', '', ''] }, rows)
+    memoizedGenerateEmptyRows(
+      { id: 0, colours: ['', '', '', ''] },
+      numberOfRows
+    )
   );
   const [gameEnded, setGameEnded] = useState<boolean>(false);
   const [gameResult, setGameResult] = useState<GameResult>('');
@@ -94,31 +103,16 @@ export default function Board({
   }, [masterCombination.current]);
 
   useEffect(() => {
-    let newValidatedRows;
-    if (isNaN(rows) || typeof rows !== 'number') {
-      newValidatedRows = 1;
-    } else {
-      newValidatedRows = Math.max(1, Math.min(rows, 10));
-    }
-
-    // If the current 'rows' state is not the 'newValidatedRows' (e.g., it was NaN or out of bounds),
-    // update 'rows' to the corrected value and exit this effect run.
-    // The effect will run again with the corrected 'rows' value.
-    if (rows !== newValidatedRows) {
-      setRows(newValidatedRows);
-      return;
-    }
-
     setPlayerRows(
       memoizedGenerateEmptyRows(
         { id: 0, colours: ['', '', '', ''] },
-        newValidatedRows
+        numberOfRows
       )
     );
     setFeedbackRows(
       memoizedGenerateEmptyRows(
         { id: 0, colours: ['', '', '', ''] },
-        newValidatedRows
+        numberOfRows
       )
     );
     setactiveRowIndex(0);
@@ -126,7 +120,7 @@ export default function Board({
     setGameResult('');
     masterCombination.current = generateMasterCombination();
   }, [
-    rows,
+    numberOfRows,
     memoizedGenerateEmptyRows,
     generateMasterCombination,
     masterCombination,
@@ -245,7 +239,7 @@ export default function Board({
   };
 
   return (
-    <div className={howToOpened ? 'how-to-overlay-open' : ''}>
+    <div className={howToOpened || settingsOpened ? 'overlay-open' : ''}>
       <div
         className={(gameEnded ? 'game-ended ' : '') + 'master-row'}
         ref={masterRow}
@@ -271,37 +265,6 @@ export default function Board({
       <div className="game-result-header">
         {gameResult === 'won' ? 'Good Job! 🥳' : null}
         {gameResult === 'lost' ? "You'll get it next time 🤗" : null}
-      </div>
-
-      <div className="settings">
-        <fieldset className="settings__fieldset">
-          <label htmlFor="rows">Number of rows</label>
-          <input
-            type="number"
-            value={rows}
-            id="rows"
-            name="rows"
-            min="1"
-            max="10"
-            step="1"
-            onChange={(e) => {
-              setRows(Number(e.target.value));
-            }}
-            aria-label="Number of rows"
-          />
-        </fieldset>
-        <fieldset className="settings__fieldset">
-          <label htmlFor="colourRepetition">
-            Allow colour repetition in puzzle
-          </label>
-          <input
-            type="checkbox"
-            name="colourRepetition"
-            id="colourRepetition"
-            defaultChecked={colourRepetition}
-            onChange={(e) => setColourRepetition(e.target.checked)}
-          />
-        </fieldset>
       </div>
 
       <div className="game-rows" ref={playerCells}>

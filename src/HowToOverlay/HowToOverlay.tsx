@@ -1,9 +1,6 @@
-import './Header.css';
 import { allColours } from '../utils/colours';
-import { useRef } from 'react';
-import useOutsideClickHandler from '../hooks/useOutsideClickHandler';
 
-export function HowToOverlay() {
+export default function HowToOverlay() {
   return (
     <div className="overlay-content">
       <div>
@@ -108,36 +105,6 @@ export function HowToOverlay() {
           </li>
         </ul>
       </div>
-    </div>
-  );
-}
-
-export default function Header({
-  howToOpened,
-  setHowToOpened,
-}: Readonly<{
-  howToOpened: boolean;
-  setHowToOpened: (opened: boolean) => void;
-}>) {
-  const howtowrapper = useRef(null);
-  useOutsideClickHandler(howtowrapper, () => {
-    if (howToOpened) {
-      // Only call the setter if the modal is actually open
-      setHowToOpened(false);
-    }
-  });
-
-  return (
-    <div>
-      <div className={howToOpened ? 'opened' : 'closed'} ref={howtowrapper}>
-        <HowToOverlay />
-      </div>
-      <div>
-        <button onClick={() => !howToOpened && setHowToOpened(true)}>
-          How to play?
-        </button>
-      </div>
-      <p>Guess the colour combination</p>
     </div>
   );
 }

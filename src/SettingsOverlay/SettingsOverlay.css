@@ -1,0 +1,31 @@
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.settings-fieldset {
+  border: none;
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+}
+
+input[type="number"] {
+  width: 50px;
+  height: 25px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
