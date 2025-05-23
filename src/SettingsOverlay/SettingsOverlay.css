@@ -9,17 +9,6 @@
   align-items: center;
 }
 
-@media (max-width: 480px) {
-  .settings-overlay.opened {
-    width: 80%;
-  }
-}
-
-@media (max-width: 768px) {
-  .settings-overlay.opened {
-    width: 90%;
-  }
-}
 
 .settings-form {
   display: flex;
@@ -51,4 +40,16 @@ input[type="checkbox"] {
   border-radius: 5px;
   border: 1px solid var(--color-border);
   padding: 5px;
+}
+
+@media (max-width: 480px) {
+  .settings-overlay.opened {
+    width: 80%;
+  }
+}
+
+@media (max-width: 768px) {
+  .settings-overlay.opened {
+    width: 90%;
+  }
 }

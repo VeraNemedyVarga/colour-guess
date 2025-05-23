@@ -1,3 +1,4 @@
+import './HowToOverlay.css';
 import { allColours } from '../utils/colours';
 
 export default function HowToOverlay() {

@@ -40,25 +40,8 @@
   background-color: var(--color-overlay-background);
   color: var(--color-white);
   overflow: auto;
-  padding: 2rem 4rem;
+  padding: 2rem 3rem;
   text-align: left;
-}
-
-.colour-name::after {
-  content: ', ';
-}
-
-.colour-name:last-child::after {
-  content: '';
-}
-
-.feedback-colour {
-  padding-left: 0;
-}
-
-.feedback-colour li {
-  display: inline-flex;
-  align-items: center;
 }
 
 .header {

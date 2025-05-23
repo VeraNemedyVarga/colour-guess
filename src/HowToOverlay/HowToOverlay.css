@@ -1,0 +1,33 @@
+.howto-overlay.opened {
+  width: 480px;
+}
+
+.colour-name::after {
+  content: ', ';
+}
+
+.colour-name:last-child::after {
+  content: '';
+}
+
+.feedback-colour {
+  padding-left: 0;
+}
+
+.feedback-colour li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+}
+
+@media (max-width: 480px) {
+  .howto-overlay.opened {
+    width: 80%;
+  }
+}
+
+@media (max-width: 768px) {
+  .howto-overlay.opened {
+    width: 90%;
+  }
+}
