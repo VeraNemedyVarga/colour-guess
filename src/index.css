@@ -6,6 +6,11 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #737373;
+  --color-white: #fff;
+  --color-button: #aaa9ed;
+    --color-master-card-back: #787777;
+    --color-border: #6170b9;
+    --color-accent: #535bf2;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -22,11 +27,7 @@ body.light {
 
   --color-font: #000;
   --color-body-background: #bfe1cc;
-  --color-button: #aaa9ed;
-  --color-master-card-back: #787777;
-  --color-border: #6170b9;
-  --color-accent: #535bf2;
-
+  --color-overlay-background: #787777;
 
   color: var(--color-font);
   background-color: var(--color-body-background);
@@ -49,11 +50,7 @@ body.dark {
 
   --color-font: #e7e7e7;
   --color-body-background: #213547;
-  --color-button: #aaa9ed;
-  --color-master-card-back: #787777;
-  --color-border: #6170b9;
-  --color-accent: #535bf2;
-
+  --color-overlay-background: #3f6283;
 
   color: var(--color-font);
   background-color: var(--color-body-background);
@@ -108,4 +105,10 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (max-width: 480px) {
+  #root {
+    width:100%;
+  }
 }

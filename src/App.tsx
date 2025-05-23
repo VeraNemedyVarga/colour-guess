@@ -18,8 +18,8 @@ function App() {
   const howtowrapper = useRef(null);
   useOutsideClickHandler(howtowrapper, () => {
     if (howToOpened) {
-      // Only call the setter if the modal is actually open
       setHowToOpened(false);
+      document.body.classList.remove('overlay-open');
     }
   });
 
@@ -27,6 +27,7 @@ function App() {
   useOutsideClickHandler(settingswrapper, () => {
     if (settingsOpened) {
       setSettingsOpened(false);
+      document.body.classList.remove('overlay-open');
     }
   });
 
@@ -34,6 +35,7 @@ function App() {
     if (!howToOpened) {
       setHowToOpened(true);
       setSettingsOpened(false);
+      document.body.classList.add('overlay-open');
     }
   };
 
@@ -41,6 +43,7 @@ function App() {
     if (!settingsOpened) {
       setSettingsOpened(true);
       setHowToOpened(false);
+      document.body.classList.add('overlay-open');
     }
   };
 

@@ -10,3 +10,11 @@
   width: 24px;
   height: 24px;
 }
+
+@media(max-width: 480px) {
+  .feedback-row-item {
+      display: grid;
+      grid-template-columns: repeat(4, 25px);
+      margin: 20px auto;
+  }
+}

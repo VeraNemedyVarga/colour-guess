@@ -30,20 +30,17 @@
   left: 0;
   bottom: 0;
   right: 0;
-  background-color: gray;
   z-index: 2;
   width: 50vw;
   height: 70vh;
   margin: auto;
-  padding: 5%;
-  overflow-y: scroll;
-}
-
-.settings-overlay.opened {
-  width: 480px;
 }
 
 .overlay-content {
+  background-color: var(--color-overlay-background);
+  color: var(--color-white);
+  overflow: auto;
+  padding: 2rem 4rem;
   text-align: left;
 }
 
@@ -65,16 +62,25 @@
 }
 
 .header {
-  display: flex;
-  justify-content: flex-start;
+  display: grid;
   align-items: center;
+  grid-template-areas:
+  "how-to settings"
+  ". toggle";
+  grid-template-columns: 1fr 1fr;
 }
 
 .how-to-button {
-  margin-right: 1rem;
+  margin-right: .5rem;
+}
+
+.settings-button {
+  margin-left: .5rem;
 }
 
 .toggle {
   display: flex;
   margin-left: auto;
+  margin-top: 1rem;
+  grid-column-start: 2;
 }

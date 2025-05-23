@@ -1,3 +1,26 @@
+.settings-overlay.opened {
+  width: 480px;
+}
+
+.settings-overlay .overlay-content {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .settings-overlay.opened {
+    width: 80%;
+  }
+}
+
+@media (max-width: 768px) {
+  .settings-overlay.opened {
+    width: 90%;
+  }
+}
+
 .settings-form {
   display: flex;
   flex-direction: column;

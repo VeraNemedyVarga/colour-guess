@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react';
 import './Toggle.css';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 const Toggle = () => {
-  const [light, setLight] = useState(true);
-  const toggle = () => {
-    setLight(!light);
-  };
-
+  const { getItem, setItem } = useLocalStorage();
   const systemPreference = window.matchMedia(
     '(prefers-color-scheme: dark)'
   ).matches;
-
-  useEffect(() => {
-    setLight(!systemPreference);
-  }, [systemPreference]);
+  const [light, setLight] = useState(getItem('light', !systemPreference));
+  const toggle = () => {
+    setLight(!light);
+    setItem('light', !light);
+  };
 
   useEffect(() => {
     if (!light) {

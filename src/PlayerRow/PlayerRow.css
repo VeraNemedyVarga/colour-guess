@@ -135,3 +135,16 @@
 .player-row__submit-button {
   height: 48px;
 }
+
+@media (max-width: 480px) {
+  .game-rows__player-row {
+    display: grid;
+    grid-template-columns: auto;
+    margin-bottom: 20px;
+  }
+
+  .player-row {
+    grid-template-columns: repeat(2, auto);
+    margin-right: 0;
+  }
+}
