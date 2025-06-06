@@ -1,5 +1,5 @@
 import './HowToOverlay.css';
-import { allColours } from '../utils/colours';
+import { allColours } from '../types';
 
 export default function HowToOverlay() {
   return (

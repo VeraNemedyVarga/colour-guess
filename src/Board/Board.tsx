@@ -1,14 +1,19 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 
-import { Colours, PlayerGuess, GameFeedback, GameResult } from '../types';
-import { allColours } from '../utils/colours';
+import {
+  Colours,
+  allColours,
+  PlayerGuess,
+  GameFeedback,
+  GameResult,
+  FeedBackColour,
+  MasterCombination,
+} from '../types';
 import './Board.css';
 import PlayerRow from '../PlayerRow/PlayerRow';
 import FeedbackRow from '../FeedbackRow/FeedbackRow';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-
-type MasterCombination = Array<Colours>;
 
 export default function Board({
   howToOpened,
@@ -48,7 +53,9 @@ export default function Board({
     )
   );
   const [gameEnded, setGameEnded] = useState<boolean>(false);
-  const [gameResult, setGameResult] = useState<GameResult>('');
+  const [gameResult, setGameResult] = useState<GameResult>(
+    GameResult.NotStarted
+  );
 
   const [activeRowIndex, setactiveRowIndex] = useState<number>(0);
 
@@ -56,7 +63,7 @@ export default function Board({
   const qpc = gsap.utils.selector(playerCells);
 
   const generateMasterCombination = useCallback((): MasterCombination => {
-    const randomArray: MasterCombination = [];
+    const randomArray = [];
     const colours: Colours[] = [...allColours] as Colours[];
     // Ensure master combination always has 4 colours, regardless of 'rows' state
     for (let i = 0; i < 4; i++) {
@@ -70,7 +77,7 @@ export default function Board({
         colours.splice(colourIndex, 1);
       }
     }
-    return randomArray;
+    return randomArray as MasterCombination;
   }, [colourRepetition]); // allColours is a constant import
 
   const masterCombination = useRef<MasterCombination>(
@@ -117,7 +124,7 @@ export default function Board({
     );
     setactiveRowIndex(0);
     setGameEnded(false);
-    setGameResult('');
+    setGameResult(GameResult.InProgress);
     masterCombination.current = generateMasterCombination();
   }, [
     numberOfRows,
@@ -147,11 +154,14 @@ export default function Board({
   const giveFeedback = () => {
     const feedback: GameFeedback['colours'] = ['', '', '', ''];
     playerRows[activeRowIndex].colours.forEach((colour, index) => {
-      if (masterCombination.current.includes(colour)) {
+      if (
+        colour !== '' &&
+        masterCombination.current.includes(colour as Colours)
+      ) {
         if (colour === masterCombination.current[index]) {
-          feedback[index] = 'white';
+          feedback[index] = FeedBackColour.White;
         } else {
-          feedback[index] = 'black';
+          feedback[index] = FeedBackColour.Black;
         }
       }
     });
@@ -161,14 +171,19 @@ export default function Board({
   };
 
   const gameShouldEnd = () => {
-    if (
-      arraysMatch(playerRows[activeRowIndex].colours, masterCombination.current)
-    ) {
-      setGameResult('won');
-      return true;
+    if (!playerRows[activeRowIndex].colours.includes('')) {
+      if (
+        arraysMatch(
+          playerRows[activeRowIndex].colours as Colours[],
+          masterCombination.current
+        )
+      ) {
+        setGameResult(GameResult.Won);
+        return true;
+      }
     }
     if (activeRowIndex === playerRows.length - 1) {
-      setGameResult('lost');
+      setGameResult(GameResult.Lost);
       return true;
     }
     return false;

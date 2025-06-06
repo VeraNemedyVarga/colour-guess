@@ -1,6 +1,5 @@
-import { PlayerGuess, Colours } from '../types';
+import { PlayerGuess, Colours, allColours } from '../types';
 import './PlayerRow.css';
-import { allColours } from '../utils/colours';
 import { useEffect, useState, useRef } from 'react';
 import useOutsideClickHandler from '../hooks/useOutsideClickHandler';
 
@@ -62,7 +61,7 @@ function SpeedDial({
                 backgroundColor: `${colour}`,
                 animationDelay: isOpen ? `0.${(index + 1) % 8}s` : '0s',
               }}
-              onClick={() => handleColourPick(colour as Colours)}
+              onClick={() => handleColourPick(colour)}
             ></div>
           );
         })}
